@@ -39,12 +39,12 @@ def _merge_external_data(X):
     return X
 """
 
-def _merge_external_data(X_train):
+def _merge_external_data(X):
     file_path = Path(__file__).parent / "custom_external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
-    X_train_comb = X_train.join(df_ext.set_index("date"), on="date") 
-    X_train_comb.dropna(inplace=True)
-    return X_train_comb
+
+    X_comb = X.join(df_ext.set_index("date"), on="date") 
+    return X_comb
 
 
 def get_estimator():
