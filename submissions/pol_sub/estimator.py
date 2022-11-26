@@ -32,9 +32,7 @@ def _merge_external_data(X):
 
     X_comb = X.join(df_ext.set_index("date"), on="date")
     X_comb.fillna(method="ffill", inplace=True)
-    return X_comb.to_numpy()
-
-
+    return X_comb.drop("Unnamed: 0", axis=1)
 
 """
 def _merge_external_data(X):
