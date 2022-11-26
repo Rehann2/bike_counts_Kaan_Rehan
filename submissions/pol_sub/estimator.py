@@ -30,7 +30,7 @@ def _merge_external_data(X):
     file_path = Path(__file__).parent / "external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
 
-    X_comb = X.join(df_ext.set_index("date"), on="date") 
+    X_comb = X.join(df_ext.set_index("date"), on="date")
     X_comb.fillna(method="ffill", inplace=True)
     return X_comb.drop("Unnamed: 0", axis=1)
 
@@ -50,6 +50,7 @@ def _merge_external_data(X):
     del X["orig_index"]
     return X
 """
+
 def get_estimator():
     date_encoder = FunctionTransformer(_encode_dates)
     date_cols = ['year', 'month', 'day', 'weekday', 'hour']
@@ -57,7 +58,8 @@ def get_estimator():
     categorical_encoder = OneHotEncoder(handle_unknown="ignore")
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
     numerical_cols = ['site_id', 'latitude', 'longitude', 'Temperature (C)', 'wind_speed',
-                    'Humidity', 'Visibility', 'pressure1', "Precipitation"]
+                      'Humidity', 'Visibility', 'pressure1', "Precipitation"]
+
     preprocessor = ColumnTransformer(
         [
             ("date", OneHotEncoder(handle_unknown="ignore"), date_cols),
@@ -66,14 +68,12 @@ def get_estimator():
         ]
     )
 
-    
     regressor = Ridge()
 
     pipe = make_pipeline(
-            FunctionTransformer(_merge_external_data, validate=False),
-            date_encoder,
-            preprocessor, 
-            regressor)
+        FunctionTransformer(_merge_external_data, validate=False),
+        date_encoder,
+        preprocessor,
+        regressor)
 
     return pipe
-

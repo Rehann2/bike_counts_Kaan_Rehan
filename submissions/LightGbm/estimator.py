@@ -7,7 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.pipeline import make_pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
-from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
 
 
 def _encode_dates(X):
@@ -26,7 +26,6 @@ def _encode_dates(X):
 def _merge_external_data(X):
     file_path = Path(__file__).parent / "external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
-
     X = X.copy()
     # When using merge_asof left frame need to be sorted
     X["orig_index"] = np.arange(X.shape[0])
@@ -47,7 +46,7 @@ def get_estimator():
     categorical_encoder = OneHotEncoder(handle_unknown="ignore")
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
     numerical_cols = ['site_id', 'latitude', 'longitude', 'Temperature (C)', 'wind_speed',
-                      'Humidity', 'Visibility', 'pressure1', "Precipitation"]
+                      'Humidity', 'Visibility', 'pressure1', "Precipitation", 'sunshine_time', 'suntime', 'new_cases']
 
     preprocessor = ColumnTransformer(
         [
@@ -56,19 +55,10 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'base_score': 0.5, 'booster': 'gbtree', 'callbacks': None,
-              'colsample_bylevel': 1, 'colsample_bynode': 1, 'colsample_bytree': 1.0,
-              'early_stopping_rounds': None, 'enable_categorical': False, 'eta': 0.3,
-              'eval_metric': 'rmse', 'feature_types': None, 'gamma': 0.3, 'gpu_id': -1,
-              'grow_policy': 'depthwise', 'importance_type': None,
-              'learning_rate': 0.300000012, 'max_bin': 256,
-              'max_cat_threshold': 64, 'max_cat_to_onehot': 4, 'max_delta_step': 0,
-              'max_depth': 8, 'max_leaves': 0, 'min_child_weight': 4,
-              'monotone_constraints': '()', 'n_estimators': 700, 'n_jobs': 0,
-              'num_parallel_tree': 1, 'predictor': 'auto', 'tree_method': 'gpu_hist'}
+    params = {'learning_rate': 0.05, 'max_depth': 9,
+              'n_estimators': 3000, 'bagging_freq': 100, 'min_data_in_leaf': 7}
 
-    Boost = XGBRegressor(**params)
-
+    Boost = LGBMRegressor(**params)
     pipe = make_pipeline(FunctionTransformer(
         _merge_external_data, validate=False), date_encoder, preprocessor, Boost)
 
