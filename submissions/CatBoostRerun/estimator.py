@@ -45,7 +45,7 @@ def get_estimator():
     categorical_encoder = OneHotEncoder(handle_unknown="ignore")
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
     numerical_cols = ['site_id', 'latitude', 'longitude', 'Temperature (C)', 'wind_speed',
-                      'Humidity', 'Visibility', 'pressure1', "Precipitation", 'sunshine_time', 'suntime', 'new_cases']
+                      'Humidity', 'Visibility', 'pressure1', 'sunshine_time', 'suntime', 'new_cases']
 
     preprocessor = ColumnTransformer(
         [
@@ -54,8 +54,8 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'learning_rate': 0.15, 'max_depth': 14, 'l2_leaf_reg': 10,
-              'iterations': 800, 'max_bin': 280, 'bagging_temperature': .5, 'random_strength': 10, 'task_type': 'GPU'}
+    params = {'learning_rate': 0.14, 'max_depth': 10, 'l2_leaf_reg': 10,
+              'iterations': 700, 'max_bin': 250}
 
     Boost = CatBoostRegressor(**params)
 
