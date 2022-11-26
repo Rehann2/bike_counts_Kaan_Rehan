@@ -23,6 +23,7 @@ def _encode_dates(X):
     return X.drop(columns=["date"])
 
 
+
 def get_weather_data(dates):
 
     df_weather = pd.DataFrame()
@@ -54,6 +55,7 @@ def merge_external_data(main_data, external_data):
     data = main_data.join(external_data.set_index("date"), on="date")
 
     return data
+
 
 
 def get_estimator():

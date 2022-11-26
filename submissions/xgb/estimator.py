@@ -26,6 +26,7 @@ def _encode_dates(X):
 def _merge_external_data(X):
     file_path = Path(__file__).parent / "external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
+
     X = X.copy()
     # When using merge_asof left frame need to be sorted
     X["orig_index"] = np.arange(X.shape[0])

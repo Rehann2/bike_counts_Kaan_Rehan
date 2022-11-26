@@ -12,6 +12,7 @@ from sklearn.linear_model import Ridge
 from sklearn.preprocessing import PolynomialFeatures
 
 
+
 def _encode_dates(X):
     X = X.copy()  # modify a copy of X
     # Encode the date information from the DateOfDeparture columns
@@ -34,6 +35,7 @@ def _merge_external_data(X):
     return X_comb.to_numpy()
 
 
+
 """
 def _merge_external_data(X):
     file_path = Path(__file__).parent / "custom_external_data.csv"
@@ -51,7 +53,6 @@ def _merge_external_data(X):
     return X
 """
 
-
 def get_estimator():
     date_encoder = FunctionTransformer(_encode_dates)
     date_cols = ['year', 'month', 'day', 'weekday', 'hour']
@@ -60,6 +61,7 @@ def get_estimator():
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
     numerical_cols = ['site_id', 'latitude', 'longitude', 'Temperature (C)', 'wind_speed',
                       'Humidity', 'Visibility', 'pressure1', "Precipitation"]
+
     preprocessor = ColumnTransformer(
         [
             ("date", OneHotEncoder(handle_unknown="ignore"), date_cols),
