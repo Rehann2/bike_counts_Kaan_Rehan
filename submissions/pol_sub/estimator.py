@@ -27,12 +27,12 @@ def _encode_dates(X):
 
 
 def _merge_external_data(X):
-    file_path = Path(__file__).parent / "custom_external_data.csv"
+    file_path = Path(__file__).parent / "external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
 
     X_comb = X.join(df_ext.set_index("date"), on="date") 
     X_comb.fillna(method="ffill", inplace=True)
-    return X_comb
+    return X_comb.drop("Unnamed: 0", axis=1)
 
 """
 def _merge_external_data(X):

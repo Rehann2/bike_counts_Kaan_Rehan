@@ -23,8 +23,6 @@ def _encode_dates(X):
     return X.drop(columns=["date"])
 
 
-
-
 def get_weather_data(dates):
     
     df_weather = pd.DataFrame()
