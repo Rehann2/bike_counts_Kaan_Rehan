@@ -55,8 +55,8 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'n_estimators': 1000,
-              'max_depth': 47, 'learning_rate': .16}
+    params = {'device': 'gpu', 'max_depth': 15,
+              'n_estimators': 2500, 'verbose': 10}
 
     Boost = LGBMRegressor(**params)
 
