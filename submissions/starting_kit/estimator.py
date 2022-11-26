@@ -24,37 +24,39 @@ def _encode_dates(X):
 
 
 
-
 def get_weather_data(dates):
-    
+
     df_weather = pd.DataFrame()
     missing_dates = []
-    
+
     for date in dates:
-        
+
         url = f'https://prevision-meteo.ch/climat/horaire/paris-montsouris/{date}'
         html = requests.get(url).content
-        
+
         try:
-            _, df_hour, df_day  = pd.read_html(html)
+            _, df_hour, df_day = pd.read_html(html)
         except:
             missing_dates.append(date)
             continue
-        
+
         df_hour.insert(0, ("Heure UTC1", "date"), date)
         date = pd.to_datetime(df_hour["Heure UTC1", "date"])
-        time = pd.to_datetime(df_hour["Heure UTC1", "Heure UTC1"], 
-                              format="%H:%M") - dt.datetime(1900,1,1)
+        time = pd.to_datetime(df_hour["Heure UTC1", "Heure UTC1"],
+                              format="%H:%M") - dt.datetime(1900, 1, 1)
         df_hour.drop(columns=df_hour.columns[0:2], inplace=True)
-        df_hour.insert(0, "date", date+time)       
+        df_hour.insert(0, "date", date+time)
         df_weather = pd.concat([df_weather, df_hour], ignore_index=True)
-        
+
         return df_weather
-    
+
+
 def merge_external_data(main_data, external_data):
-    data = main_data.join(external_data.set_index("date"), on="date") 
-    
-    return data    
+    data = main_data.join(external_data.set_index("date"), on="date")
+
+    return data
+
+
 
 def get_estimator():
     date_encoder = FunctionTransformer(_encode_dates)
