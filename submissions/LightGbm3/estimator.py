@@ -56,7 +56,7 @@ def get_estimator():
         ]
     )
     params = {'n_estimators': 1500,
-              'max_depth': 40, 'learning_rate': .18}
+              'max_depth': 40, 'learning_rate': .18, 'num_leaves': 42, }
 
     Boost = LGBMRegressor(**params)
 

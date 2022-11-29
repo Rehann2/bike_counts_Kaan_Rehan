@@ -55,8 +55,8 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'learning_rate': 0.05, 'max_depth': 9,
-              'n_estimators': 3000, 'bagging_freq': 100, 'min_data_in_leaf': 7}
+    params = {'learning_rate': 0.02, 'max_depth': 10,
+              'n_estimators': 1500}
 
     Boost = LGBMRegressor(**params)
     pipe = make_pipeline(FunctionTransformer(
