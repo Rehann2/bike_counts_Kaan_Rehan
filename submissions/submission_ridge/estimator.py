@@ -2,13 +2,12 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import joblib
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import KNNImputer
+from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 from sklearn.preprocessing import PolynomialFeatures
 
 
@@ -27,18 +26,19 @@ def _encode_dates(X):
 
 
 def _merge_external_data(X):
-    file_path = Path(__file__).parent / "external_data.csv"
+    file_path = "external_data1.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
 
-    X_comb = X.join(df_ext.set_index("date"), on="date")
+    X_comb = X.join(df_ext.set_index("date"), on="date", rsuffix="right") 
     X_comb.fillna(method="ffill", inplace=True)
-    return X_comb.drop("Unnamed: 0", axis=1)
-
+    
+    return X_comb.drop(["Unnamed: 0", "date_only"], axis=1)
 
 
 def get_estimator():
     date_encoder = FunctionTransformer(_encode_dates)
     date_cols = ['year', 'month', 'day', 'weekday', 'hour']
+    scaler = StandardScaler()
 
     categorical_encoder = OneHotEncoder(handle_unknown="ignore")
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
@@ -50,16 +50,13 @@ def get_estimator():
         [
             ("date", OneHotEncoder(handle_unknown="ignore"), date_cols),
             ("cat", categorical_encoder, categorical_cols),
-            ("poly_features", PolynomialFeatures(degree=2), numerical_cols)
+            #("scaler", scaler, numerical_cols)
         ]
     )
 
-    regressor = LinearRegression()
+    regressor = Ridge()
 
-    pipe = make_pipeline(
-        FunctionTransformer(_merge_external_data, validate=False),
-        date_encoder,
-        preprocessor,
-        regressor)
-
+    pipe = make_pipeline(FunctionTransformer(
+        _merge_external_data, validate=False), date_encoder, preprocessor, regressor)
+    
     return pipe
