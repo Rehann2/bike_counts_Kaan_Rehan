@@ -22,7 +22,7 @@ def _encode_dates(X):
     # Finally we can drop the original columns from the dataframe
     return X.drop(columns=["date"])
 
-
+"""
 def _merge_external_data(X):
     file_path = Path(__file__).parent / "external_data.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
@@ -37,6 +37,14 @@ def _merge_external_data(X):
     X = X.sort_values("orig_index")
     del X["orig_index"]
     return X
+"""
+
+def _merge_external_data(X_train):
+    file_path = Path(__file__).parent / "custom_external_data.csv"
+    df_ext = pd.read_csv(file_path, parse_dates=["date"])
+    X_train_comb = X_train.join(df_ext.set_index("date"), on="date") 
+    X_train_comb.dropna(inplace=True)
+    return X_train_comb
 
 
 def get_estimator():
