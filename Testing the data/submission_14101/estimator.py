@@ -1,13 +1,12 @@
-from pathlib import Path
-
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.pipeline import make_pipeline
-from sklearn.compose import ColumnTransformer
+from catboost import CatBoostRegressor
 from sklearn.preprocessing import StandardScaler
-from lightgbm import LGBMRegressor
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import FunctionTransformer
+import pandas as pd
+import numpy as np
+from pathlib import Path
 
 
 def _encode_dates(X):
@@ -55,10 +54,10 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'learning_rate': 0.02, 'max_depth': 10,
-              'n_estimators': 1500}
+    params = {'learning_rate': 0.1, 'max_depth': 12, 'iterations': 500}
 
-    Boost = LGBMRegressor(**params)
+    Boost = CatBoostRegressor(**params)
+
     pipe = make_pipeline(FunctionTransformer(
         _merge_external_data, validate=False), date_encoder, preprocessor, Boost)
 

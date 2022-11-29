@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
 
@@ -34,22 +34,7 @@ def _merge_external_data(X):
     X_comb.fillna(method="ffill", inplace=True)
     return X_comb.drop("Unnamed: 0", axis=1)
 
-"""
-def _merge_external_data(X):
-    file_path = Path(__file__).parent / "custom_external_data.csv"
-    df_ext = pd.read_csv(file_path, parse_dates=["date"])
 
-    X = X.copy()
-    # When using merge_asof left frame need to be sorted
-    X["orig_index"] = np.arange(X.shape[0])
-    X = pd.merge_asof(
-        X.sort_values("date"), df_ext[["date", "t"]].sort_values("date"), on="date"
-    )
-    # Sort back to the original order
-    X = X.sort_values("orig_index")
-    del X["orig_index"]
-    return X
-"""
 
 def get_estimator():
     date_encoder = FunctionTransformer(_encode_dates)
@@ -58,7 +43,8 @@ def get_estimator():
     categorical_encoder = OneHotEncoder(handle_unknown="ignore")
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
     numerical_cols = ['site_id', 'latitude', 'longitude', 'Temperature (C)', 'wind_speed',
-                      'Humidity', 'Visibility', 'pressure1', "Precipitation"]
+                    'Humidity', 'Visibility', 'Precipitation', 'pressure1', 'sunshine_time',
+                    'suntime', 'new_cases', 'holidays2']
 
     preprocessor = ColumnTransformer(
         [
@@ -68,7 +54,7 @@ def get_estimator():
         ]
     )
 
-    regressor = Ridge()
+    regressor = LinearRegression()
 
     pipe = make_pipeline(
         FunctionTransformer(_merge_external_data, validate=False),
