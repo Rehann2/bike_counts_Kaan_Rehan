@@ -54,8 +54,9 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = params = {'learning_rate': 0.1,
-                       'max_depth': 14, 'iterations': 200, 'task_type': 'GPU'}
+    params = {'learning_rate': 0.14,
+              'max_depth': 12, 'iterations': 900, 'task_type': 'GPU', 'l2_leaf_reg': 20,
+              'bagging_temperature': 1, 'random_strength': 5, 'max_bin': 254}
 
     Boost = CatBoostRegressor(**params)
 
