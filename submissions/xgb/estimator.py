@@ -56,16 +56,10 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'base_score': 0.5, 'booster': 'gbtree', 'callbacks': None,
-              'colsample_bylevel': 1, 'colsample_bynode': 1, 'colsample_bytree': 1.0,
-              'early_stopping_rounds': None, 'enable_categorical': False, 'eta': 0.3,
-              'eval_metric': 'rmse', 'feature_types': None, 'gamma': 0.3, 'gpu_id': -1,
-              'grow_policy': 'depthwise', 'importance_type': None,
-              'learning_rate': 0.2500000012, 'max_bin': 286,
-              'max_cat_threshold': 64, 'max_cat_to_onehot': 4, 'max_delta_step': 0,
-              'max_depth': 10, 'max_leaves': 0, 'min_child_weight': 4,
-              'monotone_constraints': '()', 'n_estimators': 1500, 'n_jobs': 0,
-              'num_parallel_tree': 1, 'predictor': 'auto',  'tree_method': 'gpu_hist'}
+    params = {'learning_rate': 0.2500000012, 'max_depth': 10,
+              'n_estimators': 1100, 'num_parallel_tree': 2,
+              'predictor': 'auto',
+              'tree_method': 'gpu_hist'}
 
     Boost = XGBRegressor(**params)
 

@@ -23,7 +23,7 @@ def _encode_dates(X):
 
 
 def _merge_external_data(X):
-    file_path = Path(__file__).parent / "external_data.csv"
+    file_path = Path(__file__).parent / "external_data3.csv"
     df_ext = pd.read_csv(file_path, parse_dates=["date"])
     X = X.copy()
     # When using merge_asof left frame need to be sorted
@@ -54,8 +54,12 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'learning_rate': 0.07, 'max_depth': 12, 'l2_leaf_reg': 10,
-              'iterations': 500, 'bagging_temperature': 0.5, 'random_strength': 5, 'max_bin': 254, 'task_type': "GPU"}
+    params = {'iterations': 600,
+              'learning_rate': 0.16,
+              'loss_function': 'RMSE',
+              'random_strength': 4,
+              'task_type': 'GPU',
+              'max_depth': 13}
 
     Boost = CatBoostRegressor(**params)
 
