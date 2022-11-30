@@ -46,7 +46,7 @@ def get_estimator():
     categorical_encoder = OneHotEncoder(handle_unknown="ignore")
     categorical_cols = ["counter_name", "site_name", "wind_dir"]
     numerical_cols = ['site_id', 'latitude', 'longitude', 'Temperature (C)', 'wind_speed',
-                      'Humidity', 'Visibility', 'pressure1', "Precipitation"]
+                      'Humidity', 'Visibility', 'pressure1', 'sunshine_time', 'suntime', 'new_cases']
 
     preprocessor = ColumnTransformer(
         [
@@ -55,10 +55,11 @@ def get_estimator():
             ("scaler", scaler, numerical_cols)
         ]
     )
-    params = {'n_estimators': 1500,
-              'max_depth': 40, 'learning_rate': .18, 'num_leaves': 42, }
+    param_grid = {'device': 'gpu', 'learning_rate': 0.13, 'max_depth': 13,
+                  'min_data_in_leaf': 3,
+                  'n_estimators': 1200, 'device': 'gpu'}
 
-    Boost = LGBMRegressor(**params)
+    Boost = LGBMRegressor(**param_grid)
 
     pipe = make_pipeline(FunctionTransformer(
         _merge_external_data, validate=False), date_encoder, preprocessor, Boost)
